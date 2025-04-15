@@ -1,0 +1,10 @@
+﻿@model List<FreeTube.Models.Customer>;
+
+@foreach (var customer in Model)
+{
+	<div class="customer-card">
+		<h2>@customer.Name</h2>
+		<p>@customer.MembershipType</p>
+		@*<a href="@Url.Action("Details", "Customers", new { id = customer.Id })">View Details</a>*@
+	</div>
+}

@@ -15,5 +15,19 @@ namespace FreeTube.Controllers
         {
             return View(_db.Movies.Include("Genre").ToList());
         }
+
+        public IActionResult Details(int id)
+        {
+            var movie = _db.Movies.Include("Genre").SingleOrDefault(m => m.Id == id);
+            if (movie == null)
+                return NotFound();
+            return View(movie);
+        }   
+
+        [Route("movies/released/{year}/{month:regex(\\d{{2}}):range(1,12)}")]
+        public IActionResult ByReleaseYear(int year, int month)
+        {
+            return Content($"Year: {year}, Month: {month}");
+        }
     }
 }

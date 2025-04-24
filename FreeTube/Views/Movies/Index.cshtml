@@ -4,9 +4,7 @@
 {
 	<div class="movie-card">
 		<h2>@movie.Title</h2>
-		<p>@movie.Genre.Name</p>
-		@*<p>@movie.ReleaseDate.ToString("yyyy-MM-dd")</p>
-		<a href="@Url.Action("Details", "Movies", new { id = movie.Id })">View Details</a>*@
+		<a href="@Url.Action("Details", "Movies", new { id = movie.Id })">View Details</a>
 	</div>
 }
 

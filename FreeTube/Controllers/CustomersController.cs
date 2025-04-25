@@ -35,12 +35,50 @@ namespace FreeTube.Controllers
         public IActionResult New()
         {
             var membershipTypes = _db.MembershipType.ToList();
-            var viewModel = new NewCustomerViewModel
+            var viewModel = new CustomerFormViewModel
             {
                 MembershipTypes = membershipTypes
             };
-            return View(viewModel);
+            return View("CustomerForm", viewModel);
         }
 
+        [HttpPost]
+        public IActionResult Save(Customer customer)
+        {
+            if (customer.Id == 0)
+            {
+                _db.Customers.Add(customer);
+            }
+            else
+            {
+                var customerInDb = _db.Customers.Single(c => c.Id == customer.Id);
+                customerInDb.Name = customer.Name;
+                customerInDb.Birthdate = customer.Birthdate;
+                customerInDb.IsSubscribedToNewsletter = customer.IsSubscribedToNewsletter;
+                customerInDb.MembershipTypeId = customer.MembershipTypeId;
+            }
+
+            _db.SaveChanges();
+
+            return RedirectToAction("Index", "Customers"); 
+        }
+
+        
+        public IActionResult Edit(int id)
+        {
+            Customer? customer = _db.Customers.SingleOrDefault(c => c.Id == id);
+            if (customer == null)
+            {
+                return NotFound();
+            }
+            var membershipTypes = _db.MembershipType.ToList();
+            var viewModel = new CustomerFormViewModel
+            {
+                MembershipTypes = membershipTypes,
+                Customer = customer
+            };
+
+            return View("CustomerForm", viewModel);
+        }
     }
 }

@@ -4,6 +4,7 @@
 {
 	<div class="customer-card">
 		<h2>@customer.Name</h2>
+		<h6>@customer.MembershipType.Name</h6>
 		<a href="@Url.Action("Details", "Customers", new { id = customer.Id })">View Details</a>
 	</div>
 }

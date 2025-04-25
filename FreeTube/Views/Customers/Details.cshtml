@@ -37,6 +37,7 @@
     </dl>
 </div>
 <div>
+@*     <a href="@Url.Action("Edit", "Customers", new { id = Customer.Id })">View Details</a> *@
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>

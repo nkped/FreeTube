@@ -10,7 +10,7 @@
 	<div class="movie-card">
 		<h3>@movie.Title</h3>
 		<a href="@Url.Action("Details", "Movies", new { id = movie.Id })">View Details</a>
-		<a href="@Url.Action("Edit", "Movies", new { id = movie.Id })">Edit Movie</a>
+		<a href="@Url.Action("New", "Movies", new { id = movie.Id })">Edit Movie</a>
 	</div>
 }
 

@@ -32,14 +32,30 @@ namespace FreeTube.Controllers
             return Content($"Year: {year}, Month: {month}");
         }
 
-        public IActionResult New()
+        
+        public IActionResult New(Movie? movie)
         {
-            var genres = _db.Genre.ToList();
-            var viewModel = new MovieFormViewModel
+            if (movie == null)
             {
-                Genres = genres
-            };
-            return View("MovieForm", viewModel);
+                var genres = _db.Genre.ToList();
+                var viewModel = new MovieFormViewModel
+                {
+                    Genres = genres
+                };
+                return View("MovieForm", viewModel);
+            }
+            else
+            { 
+                var movieInDb = _db.Movies.SingleOrDefault(m => m.Id == movie.Id);
+                if (movieInDb == null)
+                    return NotFound();
+                var viewModel = new MovieFormViewModel
+                {
+                    Movie = movieInDb,
+                    Genres = _db.Genre.ToList()
+                };
+                return View("MovieForm", viewModel);
+            }
         }
 
         [HttpPost]

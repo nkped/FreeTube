@@ -41,5 +41,28 @@ namespace FreeTube.Controllers
             };
             return View("MovieForm", viewModel);
         }
+
+        [HttpPost]
+        public IActionResult Save(Movie movie)
+        {
+            if (movie.Id == 0)
+            {
+                _db.Movies.Add(movie);
+            }
+            else
+            {
+                var movieInDb = _db.Movies.Single(c => c.Id == movie.Id);
+                movieInDb.Title = movie.Title;
+                movieInDb.NumberInStock = movie.NumberInStock;
+                movieInDb.ReleaseDate = movie.ReleaseDate;
+                movieInDb.GenreId = movie.GenreId;
+            }
+
+            _db.SaveChanges();
+
+            return RedirectToAction("Index", "Movies");
+        }
     }
+
+
 }

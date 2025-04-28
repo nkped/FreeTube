@@ -11,7 +11,7 @@ namespace FreeTube.Data
         public DbSet<FreeTube.Models.Customer> Customers { get; set; }
         public DbSet<FreeTube.Models.Movie> Movies { get; set; }
         public DbSet<FreeTube.Models.MembershipType> MembershipType { get; set; }
-        //public DbSet<FreeTube.Models.Genre> Genres { get; set; }
+        public DbSet<FreeTube.Models.Genre> Genre { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

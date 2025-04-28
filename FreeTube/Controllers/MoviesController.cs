@@ -1,6 +1,8 @@
 ﻿using FreeTube.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using FreeTube.Models;
+using FreeTube.ViewModels;
 
 namespace FreeTube.Controllers
 {
@@ -28,6 +30,16 @@ namespace FreeTube.Controllers
         public IActionResult ByReleaseYear(int year, int month)
         {
             return Content($"Year: {year}, Month: {month}");
+        }
+
+        public IActionResult New()
+        {
+            var genres = _db.Genre.ToList();
+            var viewModel = new MovieFormViewModel
+            {
+                Genres = genres
+            };
+            return View("MovieForm", viewModel);
         }
     }
 }

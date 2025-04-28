@@ -1,10 +1,16 @@
 ﻿@model List<FreeTube.Models.Movie>;
 
+<div>
+	<a href="@Url.Action("New", "Movies")" class="btn btn-outline-primary">New Movie</a>
+</div>
+
 @foreach (var movie in Model)
 {
+
 	<div class="movie-card">
-		<h2>@movie.Title</h2>
+		<h3>@movie.Title</h3>
 		<a href="@Url.Action("Details", "Movies", new { id = movie.Id })">View Details</a>
+		<a href="@Url.Action("Edit", "Movies", new { id = movie.Id })">Edit Movie</a>
 	</div>
 }
 

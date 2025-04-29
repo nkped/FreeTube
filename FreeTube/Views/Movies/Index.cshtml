@@ -1,7 +1,7 @@
 ﻿@model List<FreeTube.Models.Movie>;
 
 <div>
-	<a href="@Url.Action("New", "Movies")" class="btn btn-outline-primary">New Movie</a>
+	<a href="@Url.Action("New", "Movies", new { id = 0 })" class="btn btn-primary">New Movie</a>
 </div>
 
 @foreach (var movie in Model)

@@ -33,9 +33,9 @@ namespace FreeTube.Controllers
         }
 
         
-        public IActionResult New(Movie? movie)
+        public IActionResult New(int id)
         {
-            if (movie == null)
+            if (id == 0)
             {
                 var genres = _db.Genre.ToList();
                 var viewModel = new MovieFormViewModel
@@ -46,7 +46,7 @@ namespace FreeTube.Controllers
             }
             else
             { 
-                var movieInDb = _db.Movies.SingleOrDefault(m => m.Id == movie.Id);
+                var movieInDb = _db.Movies.SingleOrDefault(m => m.Id == id);
                 if (movieInDb == null)
                     return NotFound();
                 var viewModel = new MovieFormViewModel

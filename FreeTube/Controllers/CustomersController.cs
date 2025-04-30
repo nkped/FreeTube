@@ -45,6 +45,16 @@ namespace FreeTube.Controllers
         [HttpPost]
         public IActionResult Save(Customer customer)
         {
+            if (!ModelState.IsValid)
+            {
+                var viewModel = new CustomerFormViewModel
+                {
+                    Customer = customer,
+                    MembershipTypes = _db.MembershipType.ToList()
+                };
+                return View("CustomerForm", viewModel);
+            }
+
             if (customer.Id == 0)
             {
                 _db.Customers.Add(customer);

@@ -37,7 +37,8 @@ namespace FreeTube.Controllers
             var membershipTypes = _db.MembershipType.ToList();
             var viewModel = new CustomerFormViewModel
             {
-                MembershipTypes = membershipTypes
+                MembershipTypes = membershipTypes,
+                Customer = new Customer()
             };
             return View("CustomerForm", viewModel);
         }

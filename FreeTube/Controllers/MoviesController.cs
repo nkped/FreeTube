@@ -33,34 +33,44 @@ namespace FreeTube.Controllers
         }
 
         
-        public IActionResult New(int id)
+        public IActionResult New()
         {
-            if (id == 0)
+            var genres = _db.Genre.ToList();
+            var viewModel = new MovieFormViewModel
             {
-                var genres = _db.Genre.ToList();
-                var viewModel = new MovieFormViewModel
+                Genres = genres
+            };
+            return View("MovieForm", viewModel);
+            
+        }
+        public ActionResult Edit(int id)
+        {
+            var movie = _db.Movies.SingleOrDefault(c => c.Id == id);
+
+            if (movie == null)
+                return NotFound();
+
+            var viewModel = new MovieFormViewModel(movie)
+            {
+                Genres = _db.Genre.ToList()
+            };
+
+            return View("MovieForm", viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Save(Movie movie)
+        {
+            if (!ModelState.IsValid)
+            {
+                var viewModel = new MovieFormViewModel(movie)
                 {
-                    Genres = genres
-                };
-                return View("MovieForm", viewModel);
-            }
-            else
-            { 
-                var movieInDb = _db.Movies.SingleOrDefault(m => m.Id == id);
-                if (movieInDb == null)
-                    return NotFound();
-                var viewModel = new MovieFormViewModel
-                {
-                    Movie = movieInDb,
                     Genres = _db.Genre.ToList()
                 };
                 return View("MovieForm", viewModel);
             }
-        }
 
-        [HttpPost]
-        public IActionResult Save(Movie movie)
-        {
             if (movie.Id == 0)
             {
                 _db.Movies.Add(movie);

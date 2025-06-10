@@ -10,6 +10,8 @@ using FreeTube.Models;
 using System.Net;
 using System.Web.Http;
 using RouteAttribute = Microsoft.AspNetCore.Mvc.RouteAttribute;
+using FreeTube.Dtos;
+using AutoMapper;
 
 namespace FreeTube.Controllers.Api
 {
@@ -18,15 +20,19 @@ namespace FreeTube.Controllers.Api
     public class CustomersController : ControllerBase
     {
         private readonly FreeTubeContext _db;
-        public CustomersController(FreeTubeContext db)
+        private readonly IMapper _mapper;
+        public CustomersController(FreeTubeContext db, IMapper mapper)
         {
             _db = db;
+            _mapper = mapper;
         }
         //api/customers
         [Microsoft.AspNetCore.Mvc.HttpGet]
-        public async Task<ActionResult<IEnumerable<Customer>>> GetCustomers()
+        public async Task<ActionResult<IEnumerable<CustomerDto>>> GetCustomers()
         {
-            return await _db.Customers.ToListAsync();
+            List<Customer> customerList = await _db.Customers.ToListAsync();
+            List<CustomerDto> customerDto = _mapper.Map<List<CustomerDto>>(customerList);
+            return Ok(customerDto);
         }
 
         //api/customers/id

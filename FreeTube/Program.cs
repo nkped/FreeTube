@@ -1,4 +1,5 @@
 using FreeTube.Data;
+using FreeTube.Dtos;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<FreeTubeContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("FreeTubeContext")));
 
+builder.Services.AddAutoMapper(typeof(Program));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -82,6 +82,7 @@ namespace FreeTube.Controllers
                 movieInDb.NumberInStock = movie.NumberInStock;
                 movieInDb.ReleaseDate = movie.ReleaseDate;
                 movieInDb.GenreId = movie.GenreId;
+                movieInDb.DateAdded = movie.DateAdded;
             }
 
             _db.SaveChanges();

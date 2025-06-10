@@ -26,6 +26,8 @@ namespace FreeTube.ViewModels
         [Display(Name = "Number In Stock")]
         public byte? NumberInStock { get; set; }
 
+        public DateTime? DateAdded { get; set; }
+
         //public string Title
         //{
         //    get
@@ -45,7 +47,7 @@ namespace FreeTube.ViewModels
             ReleaseDate = movie.ReleaseDate;
             NumberInStock = movie.NumberInStock;
             GenreId = movie.GenreId;
-            //DateAdded = movie.DateAdded;
+            DateAdded = movie.DateAdded;
         }
     }
 }

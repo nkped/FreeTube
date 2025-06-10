@@ -11,11 +11,10 @@ namespace FreeTube.Models
         [StringLength(255)]
         public string? Title { get; set; }
         
-        public Genre? Genre { get; set; }
-        
         [Required]
         [Display(Name = "Genre")]
         public byte? GenreId { get; set; }
+        public Genre? Genre { get; set; }
         
         [Required]
         [Display(Name = "Release Date")]

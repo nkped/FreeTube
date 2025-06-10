@@ -1,0 +1,92 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using FreeTube.Data;
+using FreeTube.Models;
+using System.Net;
+using System.Web.Http;
+using RouteAttribute = Microsoft.AspNetCore.Mvc.RouteAttribute;
+
+namespace FreeTube.Controllers.Api
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class CustomersController : ControllerBase
+    {
+        private readonly FreeTubeContext _db;
+        public CustomersController(FreeTubeContext db)
+        {
+            _db = db;
+        }
+        //api/customers
+        [Microsoft.AspNetCore.Mvc.HttpGet]
+        public async Task<ActionResult<IEnumerable<Customer>>> GetCustomers()
+        {
+            return await _db.Customers.ToListAsync();
+        }
+
+        //api/customers/id
+        [Microsoft.AspNetCore.Mvc.HttpGet("{id}")]
+        public async Task<ActionResult<Customer>> GetCustomer(int id)
+        {
+            var customer = await _db.Customers.SingleOrDefaultAsync(c => c.Id == id);
+
+            if (customer == null)
+            {
+                return NotFound();
+            }
+
+
+            return customer;
+        }
+
+
+        //api/customers
+        [Microsoft.AspNetCore.Mvc.HttpPost]
+        public async Task<ActionResult<Customer>> AddCustomer(Customer customer)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            await _db.Customers.AddAsync(customer);
+            await _db.SaveChangesAsync();
+
+            return customer;
+        }
+
+        [Microsoft.AspNetCore.Mvc.HttpPut("{id}")]
+        public async void UpdateCustomer(int id, Customer customer)
+        {
+            var customerInDb = _db.Customers.SingleOrDefault(c => c.Id == id);
+            
+            if (!ModelState.IsValid)
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
+            if (customerInDb == null)
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
+
+            customerInDb.Birthdate = customer.Birthdate;
+            customerInDb.Name = customer.Name;
+            customerInDb.IsSubscribedToNewsletter = customer.IsSubscribedToNewsletter;
+            customerInDb.MembershipType = customer.MembershipType;
+
+            await _db.SaveChangesAsync();
+        }
+
+        //api/customers/id
+        [Microsoft.AspNetCore.Mvc.HttpDelete("{id}")]
+        public async void DeleteCustomer(int id)
+        {
+            var customerInDb = await _db.Customers.SingleOrDefaultAsync(c => c.Id == id);
+            if (customerInDb == null)
+                throw new HttpRequestException($"Customer with id {id} not found");
+
+            _db.Customers.Remove(customerInDb);
+            await _db.SaveChangesAsync();
+        }
+
+    }
+}

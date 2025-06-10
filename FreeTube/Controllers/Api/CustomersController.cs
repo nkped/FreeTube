@@ -37,7 +37,7 @@ namespace FreeTube.Controllers.Api
 
             if (customer == null)
             {
-                return NotFound();
+                throw new HttpResponseException(HttpStatusCode.NotFound);
             }
 
 
@@ -50,7 +50,7 @@ namespace FreeTube.Controllers.Api
         public async Task<ActionResult<Customer>> AddCustomer(Customer customer)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+                throw new HttpResponseException(HttpStatusCode.BadRequest); ;
 
             await _db.Customers.AddAsync(customer);
             await _db.SaveChangesAsync();
@@ -61,12 +61,12 @@ namespace FreeTube.Controllers.Api
         [Microsoft.AspNetCore.Mvc.HttpPut("{id}")]
         public async void UpdateCustomer(int id, Customer customer)
         {
-            var customerInDb = _db.Customers.SingleOrDefault(c => c.Id == id);
-            
             if (!ModelState.IsValid)
                 throw new HttpResponseException(HttpStatusCode.BadRequest);
+
+            var customerInDb = _db.Customers.SingleOrDefault(c => c.Id == id);            
             if (customerInDb == null)
-                throw new HttpResponseException(HttpStatusCode.BadRequest);
+                throw new HttpResponseException(HttpStatusCode.NotFound);
 
             customerInDb.Birthdate = customer.Birthdate;
             customerInDb.Name = customer.Name;
@@ -82,7 +82,7 @@ namespace FreeTube.Controllers.Api
         {
             var customerInDb = await _db.Customers.SingleOrDefaultAsync(c => c.Id == id);
             if (customerInDb == null)
-                throw new HttpResponseException(HttpStatusCode.BadRequest);
+                throw new HttpResponseException(HttpStatusCode.NotFound);
 
             _db.Customers.Remove(customerInDb);
             await _db.SaveChangesAsync();

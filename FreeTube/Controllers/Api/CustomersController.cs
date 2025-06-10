@@ -82,7 +82,7 @@ namespace FreeTube.Controllers.Api
         {
             var customerInDb = await _db.Customers.SingleOrDefaultAsync(c => c.Id == id);
             if (customerInDb == null)
-                throw new HttpRequestException($"Customer with id {id} not found");
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
 
             _db.Customers.Remove(customerInDb);
             await _db.SaveChangesAsync();

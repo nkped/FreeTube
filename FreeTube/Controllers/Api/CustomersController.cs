@@ -12,6 +12,7 @@ using System.Web.Http;
 using RouteAttribute = Microsoft.AspNetCore.Mvc.RouteAttribute;
 using FreeTube.Dtos;
 using AutoMapper;
+using Microsoft.AspNetCore.Http.Extensions;
 
 namespace FreeTube.Controllers.Api
 {
@@ -43,10 +44,10 @@ namespace FreeTube.Controllers.Api
              
             if (customer == null)
             {
-                throw new HttpResponseException(HttpStatusCode.NotFound);
+                return NotFound();
             }
 
-            return _mapper.Map<CustomerDto>(customer);
+            return Ok(_mapper.Map<CustomerDto>(customer));
         }
 
 
@@ -55,43 +56,42 @@ namespace FreeTube.Controllers.Api
         public async Task<ActionResult<CustomerDto>> AddCustomer(CustomerDto customerDto)
         {
             if (!ModelState.IsValid)
-                throw new HttpResponseException(HttpStatusCode.BadRequest); ;
+                return BadRequest();
 
             Customer customer = _mapper.Map<Customer>(customerDto);
             await _db.Customers.AddAsync(customer);
             await _db.SaveChangesAsync();
+            customerDto.Id = customer.Id;
 
-            return customerDto;
+            return Created(new Uri(Request.GetEncodedUrl() + "/" + customer.Id), customerDto);
         }
 
         [Microsoft.AspNetCore.Mvc.HttpPut("{id}")]
-        public async void UpdateCustomer(int id, Customer customer)
+        public async Task<ActionResult> UpdateCustomer(int id, CustomerDto customerDto)
         {
             if (!ModelState.IsValid)
                 throw new HttpResponseException(HttpStatusCode.BadRequest);
 
             var customerInDb = _db.Customers.SingleOrDefault(c => c.Id == id);            
             if (customerInDb == null)
-                throw new HttpResponseException(HttpStatusCode.NotFound);
+                return NotFound();
 
-            customerInDb.Birthdate = customer.Birthdate;
-            customerInDb.Name = customer.Name;
-            customerInDb.IsSubscribedToNewsletter = customer.IsSubscribedToNewsletter;
-            customerInDb.MembershipType = customer.MembershipType;
-
+            _mapper.Map(customerDto, customerInDb);
             await _db.SaveChangesAsync();
+            return Ok(customerDto);
         }
 
         //api/customers/id
         [Microsoft.AspNetCore.Mvc.HttpDelete("{id}")]
-        public async void DeleteCustomer(int id)
+        public async Task<ActionResult> DeleteCustomer(int id)
         {
             var customerInDb = await _db.Customers.SingleOrDefaultAsync(c => c.Id == id);
             if (customerInDb == null)
-                throw new HttpResponseException(HttpStatusCode.NotFound);
+                return NotFound();
 
             _db.Customers.Remove(customerInDb);
             await _db.SaveChangesAsync();
+            return Ok(customerInDb);
         }
 
     }

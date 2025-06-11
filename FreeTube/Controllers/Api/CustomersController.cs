@@ -30,38 +30,38 @@ namespace FreeTube.Controllers.Api
         [Microsoft.AspNetCore.Mvc.HttpGet]
         public async Task<ActionResult<IEnumerable<CustomerDto>>> GetCustomers()
         {
-            List<Customer> customerList = await _db.Customers.ToListAsync();
-            List<CustomerDto> customerDto = _mapper.Map<List<CustomerDto>>(customerList);
-            return Ok(customerDto);
+            List<Customer> customers = await _db.Customers.ToListAsync();
+            List<CustomerDto> customersDto = _mapper.Map<List<Customer>, List<CustomerDto>>(customers);
+            return Ok(customersDto);
         }
 
         //api/customers/id
         [Microsoft.AspNetCore.Mvc.HttpGet("{id}")]
-        public async Task<ActionResult<Customer>> GetCustomer(int id)
+        public async Task<ActionResult<CustomerDto>> GetCustomer(int id)
         {
-            var customer = await _db.Customers.SingleOrDefaultAsync(c => c.Id == id);
-
+            Customer? customer = await _db.Customers.SingleOrDefaultAsync(c => c.Id == id);
+             
             if (customer == null)
             {
                 throw new HttpResponseException(HttpStatusCode.NotFound);
             }
 
-
-            return customer;
+            return _mapper.Map<CustomerDto>(customer);
         }
 
 
         //api/customers
         [Microsoft.AspNetCore.Mvc.HttpPost]
-        public async Task<ActionResult<Customer>> AddCustomer(Customer customer)
+        public async Task<ActionResult<CustomerDto>> AddCustomer(CustomerDto customerDto)
         {
             if (!ModelState.IsValid)
                 throw new HttpResponseException(HttpStatusCode.BadRequest); ;
 
+            Customer customer = _mapper.Map<Customer>(customerDto);
             await _db.Customers.AddAsync(customer);
             await _db.SaveChangesAsync();
 
-            return customer;
+            return customerDto;
         }
 
         [Microsoft.AspNetCore.Mvc.HttpPut("{id}")]

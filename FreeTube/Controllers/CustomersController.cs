@@ -17,8 +17,8 @@ namespace FreeTube.Controllers
         }
         public IActionResult Index()
         {
-            var customers = _db.Customers.Include("MembershipType").ToList();
-            return View(customers);
+            //var customers = _db.Customers.Include("MembershipType").ToList();
+            return View();
         }
 
         public IActionResult Details(int id)

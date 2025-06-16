@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using FreeTube.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using FreeTube.Data;
+using AutoMapper;
 using FreeTube.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Web.Http;
+using RouteAttribute = Microsoft.AspNetCore.Mvc.RouteAttribute;
+using Microsoft.AspNetCore.Http.Extensions;
+
+//create MovieDto and add AutoMapper
 
 namespace FreeTube.Controllers.Api
 {
@@ -14,95 +16,75 @@ namespace FreeTube.Controllers.Api
     [ApiController]
     public class MoviesController : ControllerBase
     {
-        private readonly FreeTubeContext _context;
-
-        public MoviesController(FreeTubeContext context)
+        private readonly FreeTubeContext _db;
+        private readonly IMapper _mapper;
+        public MoviesController(FreeTubeContext db, IMapper mapper)
         {
-            _context = context;
+            _db = db;
+            _mapper = mapper;            
         }
 
-        // GET: api/Movies
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Movie>>> GetMovies()
+        [Microsoft.AspNetCore.Mvc.HttpGet]
+        public async Task<IEnumerable<Movie>> GetMovies()
         {
-            return await _context.Movies.ToListAsync();
+            return await _db.Movies.ToListAsync();
         }
 
-        // GET: api/Movies/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Movie>> GetMovie(int id)
+        [Microsoft.AspNetCore.Mvc.HttpGet("{id}")]
+        public async Task<ActionResult<Movie>> GetMovieById(int id)
         {
-            var movie = await _context.Movies.FindAsync(id);
-
+            Movie? movie = await _db.Movies.SingleOrDefaultAsync(m => m.Id == id);
+            
             if (movie == null)
-            {
                 return NotFound();
-            }
-
+            
             return movie;
         }
 
-        // PUT: api/Movies/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutMovie(int id, Movie movie)
+        [Microsoft.AspNetCore.Mvc.HttpPost]
+        public async Task<ActionResult<Movie>> AddMovie(Movie movie)
         {
-            if (id != movie.Id)
-            {
-                return BadRequest();
-            }
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            _context.Entry(movie).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!MovieExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            await _db.Movies.AddAsync(movie);
+            await _db.SaveChangesAsync();
+            
+            return Created(new Uri(Request.GetEncodedUrl() + "/" + movie.Id), movie);
         }
 
-        // POST: api/Movies
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Movie>> PostMovie(Movie movie)
+        [Microsoft.AspNetCore.Mvc.HttpPut("{id}")]
+        public async Task<ActionResult> UpdateMovie(int id, Movie movie)
         {
-            _context.Movies.Add(movie);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetMovie", new { id = movie.Id }, movie);
-        }
-
-        // DELETE: api/Movies/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteMovie(int id)
-        {
-            var movie = await _context.Movies.FindAsync(id);
-            if (movie == null)
-            {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            
+            Movie? movieInDb = await _db.Movies.SingleOrDefaultAsync(m => m.Id == id);
+            
+            if (movieInDb == null)
                 return NotFound();
-            }
 
-            _context.Movies.Remove(movie);
-            await _context.SaveChangesAsync();
+            //mapper
+            movieInDb.Title = movie.Title;
+            
+            await _db.SaveChangesAsync();
 
-            return NoContent();
+            return Ok(movie);
         }
 
-        private bool MovieExists(int id)
+        [Microsoft.AspNetCore.Mvc.HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteMovie(int id)
         {
-            return _context.Movies.Any(e => e.Id == id);
+            Movie? movieInDb = await _db.Movies.SingleOrDefaultAsync((m) => m.Id == id);
+            if (movieInDb == null)
+                return BadRequest();
+            
+            _db.Movies.Remove(movieInDb);
+            await _db.SaveChangesAsync();
+            
+            return Ok(movieInDb);
         }
+
+
     }
 }

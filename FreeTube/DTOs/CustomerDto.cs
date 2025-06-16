@@ -9,13 +9,15 @@ namespace FreeTube.Dtos
 
         [Required(ErrorMessage = "Please Provide Customer Name")]
         [StringLength(255)]
-        public string? Name { get; set; }
+        public string Name { get; set; } = null!;
 
         //[Min18YearsIfMember]
-        public DateTime? Birthdate { get; set; }
+        public DateTime Birthdate { get; set; }
 
         public bool IsSubscribedToNewsletter { get; set; }
 
-        public byte? MembershipTypeId { get; set; }
+        public byte MembershipTypeId { get; set; }
+
+        public MembershipTypeDto MembershipType { get; set; } = null!;
     }
 }

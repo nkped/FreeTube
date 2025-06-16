@@ -31,7 +31,9 @@ namespace FreeTube.Controllers.Api
         [Microsoft.AspNetCore.Mvc.HttpGet]
         public async Task<ActionResult<IEnumerable<CustomerDto>>> GetCustomers()
         {
-            List<Customer> customers = await _db.Customers.ToListAsync();
+            List<Customer> customers = await _db.Customers
+                .Include((c) => c.MembershipType)
+                .ToListAsync();
             List<CustomerDto> customersDto = _mapper.Map<List<Customer>, List<CustomerDto>>(customers);
             return Ok(customersDto);
         }
@@ -56,7 +58,7 @@ namespace FreeTube.Controllers.Api
         public async Task<ActionResult<CustomerDto>> AddCustomer(CustomerDto customerDto)
         {
             if (!ModelState.IsValid)
-                return BadRequest();
+                return BadRequest(ModelState);
 
             Customer customer = _mapper.Map<Customer>(customerDto);
             await _db.Customers.AddAsync(customer);

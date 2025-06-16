@@ -28,7 +28,9 @@ namespace FreeTube.Controllers.Api
         [Microsoft.AspNetCore.Mvc.HttpGet]
         public async Task<IEnumerable<MovieDto>> GetMovies()
         {
-            List<Movie> moviesInDb = await _db.Movies.ToListAsync();
+            List<Movie> moviesInDb = await _db.Movies
+                .Include(m => m.Genre)
+                .ToListAsync();
 
             return _mapper.Map<List<MovieDto>>(moviesInDb);
         }

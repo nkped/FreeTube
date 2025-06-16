@@ -13,16 +13,7 @@
 			<th>Delete</th>
 		</tr>
 	</thead>
-	<tbody>
-@* 		@foreach (var customer in Model)
-		{
-			<tr>
-				<td>@Html.ActionLink(customer.Name, "Edit", "Customers", new {id = customer.Id})</td>
-				<td>@customer.MembershipType.Name</td>
-				<td><button data-customer-id="@customer.Id" class="btn-link js-delete">Delete</button></td>
-			</tr>
-		}
- *@	</tbody>
+	<tbody></tbody>
 </table>
 
 @section Scripts

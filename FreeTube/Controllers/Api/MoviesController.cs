@@ -1,4 +1,5 @@
 ﻿using FreeTube.Data;
+using FreeTube.Dtos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
@@ -25,51 +26,55 @@ namespace FreeTube.Controllers.Api
         }
 
         [Microsoft.AspNetCore.Mvc.HttpGet]
-        public async Task<IEnumerable<Movie>> GetMovies()
+        public async Task<IEnumerable<MovieDto>> GetMovies()
         {
-            return await _db.Movies.ToListAsync();
+            List<Movie> moviesInDb = await _db.Movies.ToListAsync();
+
+            return _mapper.Map<List<MovieDto>>(moviesInDb);
         }
 
         [Microsoft.AspNetCore.Mvc.HttpGet("{id}")]
-        public async Task<ActionResult<Movie>> GetMovieById(int id)
+        public async Task<ActionResult<MovieDto>> GetMovieById(int id)
         {
-            Movie? movie = await _db.Movies.SingleOrDefaultAsync(m => m.Id == id);
-            
-            if (movie == null)
-                return NotFound();
-            
-            return movie;
-        }
-
-        [Microsoft.AspNetCore.Mvc.HttpPost]
-        public async Task<ActionResult<Movie>> AddMovie(Movie movie)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            await _db.Movies.AddAsync(movie);
-            await _db.SaveChangesAsync();
-            
-            return Created(new Uri(Request.GetEncodedUrl() + "/" + movie.Id), movie);
-        }
-
-        [Microsoft.AspNetCore.Mvc.HttpPut("{id}")]
-        public async Task<ActionResult> UpdateMovie(int id, Movie movie)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            
             Movie? movieInDb = await _db.Movies.SingleOrDefaultAsync(m => m.Id == id);
             
             if (movieInDb == null)
                 return NotFound();
 
-            //mapper
-            movieInDb.Title = movie.Title;
+            return _mapper.Map<MovieDto>(movieInDb);   
+        }
+
+        [Microsoft.AspNetCore.Mvc.HttpPost]
+        public async Task<ActionResult<MovieDto>> AddMovie(MovieDto movieDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            Movie movie = _mapper.Map<Movie>(movieDto);
+
+            await _db.Movies.AddAsync(movie);
+            await _db.SaveChangesAsync();
+            movieDto.Id = movie.Id;
+
+            return Created(new Uri(Request.GetEncodedUrl() + "/" + movieDto.Id), movieDto);
+        }
+
+        [Microsoft.AspNetCore.Mvc.HttpPut("{id}")]
+        public async Task<ActionResult> UpdateMovie(int id, MovieDto movieDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            Movie? movieInDb = await _db.Movies.SingleOrDefaultAsync(m => m.Id == id);
+            
+            if (movieInDb == null)
+                return NotFound();
+
+            _mapper.Map(movieDto, movieInDb);
             
             await _db.SaveChangesAsync();
 
-            return Ok(movie);
+            return Ok(movieDto);
         }
 
         [Microsoft.AspNetCore.Mvc.HttpDelete("{id}")]
@@ -78,11 +83,12 @@ namespace FreeTube.Controllers.Api
             Movie? movieInDb = await _db.Movies.SingleOrDefaultAsync((m) => m.Id == id);
             if (movieInDb == null)
                 return BadRequest();
-            
+
+            MovieDto movieDto = _mapper.Map<MovieDto>(movieInDb);
             _db.Movies.Remove(movieInDb);
             await _db.SaveChangesAsync();
             
-            return Ok(movieInDb);
+            return Ok(movieDto);
         }
 
 

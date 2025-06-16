@@ -65,7 +65,7 @@ namespace FreeTube.Controllers.Api
             await _db.SaveChangesAsync();
             customerDto.Id = customer.Id;
 
-            return Created(new Uri(Request.GetEncodedUrl() + "/" + customer.Id), customerDto);
+            return Created(new Uri(Request.GetEncodedUrl() + "/" + customerDto.Id), customerDto);
         }
 
         [Microsoft.AspNetCore.Mvc.HttpPut("{id}")]

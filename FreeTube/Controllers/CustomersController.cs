@@ -6,10 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FreeTube.ViewModels;
 using System.Web.Http.Filters;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace FreeTube.Controllers
 {
+    [Authorize]
     public class CustomersController : Controller
     {
         private readonly FreeTubeContext _db;
@@ -17,7 +19,7 @@ namespace FreeTube.Controllers
         {
             _db = db;
         }
-        
+
         public IActionResult Index()
         {
             //var customers = _db.Customers.Include("MembershipType").ToList();

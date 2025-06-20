@@ -1,0 +1,65 @@
+﻿@model IEnumerable<FreeTube.Models.Movie>;
+
+@{
+	ViewBag.Title = "Movies";
+}
+
+<h2>Movies</h2>
+
+<table id="movies" class="table table-bordered table-hover">
+	<thead>
+		<tr>
+			<th>Movie</th>
+			<th>Genre</th>
+		</tr>
+	</thead>
+	<tbody>
+	</tbody>
+</table>
+
+@section Scripts
+{
+	<script>
+		$(document).ready(function () {
+			var table = $("#movies").DataTable({
+				ajax: {
+					url: "/api/movies",
+					dataSrc: ""
+				},
+				columns: [
+					{
+						data: "title"
+					},
+					{
+						data: "genre.name"
+					}
+				]
+			});
+		});
+	</script>
+}
+
+
+
+
+
+
+
+
+
+@* @model IEnumerable<FreeTube.Models.Movie>;
+
+<div>
+	<a href="@Url.Action("New", "Movies", new { id = 0 })" class="btn btn-primary">New Movie</a>
+</div>
+
+@foreach (var movie in Model)
+{
+
+	<div class="movie-card">
+		<h3>@movie.Title</h3>
+		<a href="@Url.Action("Details", "Movies", new { id = movie.Id })">View Details</a>
+		<a href="@Url.Action("Edit", "Movies", new { id = movie.Id })">Edit Movie</a>
+	</div>
+}
+ *@

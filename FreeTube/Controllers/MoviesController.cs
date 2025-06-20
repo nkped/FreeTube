@@ -3,19 +3,26 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FreeTube.Models;
 using FreeTube.ViewModels;
+using System.Web.Http;
 
 namespace FreeTube.Controllers
 {
+    [Authorize]
     public class MoviesController : Controller
     {
         private readonly FreeTubeContext _db;
-        public MoviesController(FreeTubeContext db)
+        private readonly ApplicationDbContext _identityContext;
+        public MoviesController(FreeTubeContext db, ApplicationDbContext identityContext)
         {
             _db = db;
+            _identityContext = identityContext;
+
         }
         public IActionResult Index()
         {
-            return View(_db.Movies.Include("Genre").ToList());
+            if (User.IsInRole("Admin"))
+                return View("List");
+            return View("ReadOnlyList");
         }
 
         public IActionResult Details(int id)
@@ -26,7 +33,7 @@ namespace FreeTube.Controllers
             return View(movie);
         }   
 
-        [Route("movies/released/{year}/{month:regex(\\d{{2}}):range(1,12)}")]
+        [Microsoft.AspNetCore.Mvc.Route("movies/released/{year}/{month:regex(\\d{{2}}):range(1,12)}")]
         public IActionResult ByReleaseYear(int year, int month)
         {
             return Content($"Year: {year}, Month: {month}");
@@ -58,7 +65,7 @@ namespace FreeTube.Controllers
             return View("MovieForm", viewModel);
         }
 
-        [HttpPost]
+        [Microsoft.AspNetCore.Mvc.HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Save(Movie movie)
         {

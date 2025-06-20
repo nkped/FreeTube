@@ -1,9 +1,11 @@
 using System.Diagnostics;
+using System.Web.Http;
 using FreeTube.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FreeTube.Controllers
 {
+    [AllowAnonymous]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using FreeTube.Models;
 using FreeTube.ViewModels;
 using System.Web.Http;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FreeTube.Controllers
 {
-    [Authorize]
     public class MoviesController : Controller
     {
         private readonly FreeTubeContext _db;
@@ -18,6 +18,7 @@ namespace FreeTube.Controllers
             _identityContext = identityContext;
 
         }
+
         public IActionResult Index()
         {
             if (User.IsInRole("Admin"))
@@ -39,7 +40,7 @@ namespace FreeTube.Controllers
             return Content($"Year: {year}, Month: {month}");
         }
 
-        
+        [Microsoft.AspNetCore.Authorization.Authorize(Roles = RoleName.Admin)]
         public IActionResult New()
         {
             var genres = _db.Genre.ToList();

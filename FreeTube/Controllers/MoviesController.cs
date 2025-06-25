@@ -21,7 +21,7 @@ namespace FreeTube.Controllers
 
         public IActionResult Index()
         {
-            if (User.IsInRole("Admin"))
+            if (User.IsInRole(RoleName.Admin))
                 return View("List");
             return View("ReadOnlyList");
         }

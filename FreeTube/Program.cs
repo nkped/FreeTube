@@ -1,10 +1,9 @@
 using FreeTube.Data;
-using FreeTube.Dtos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using FreeTube.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
@@ -43,7 +42,7 @@ app.MapControllerRoute(
 
 app.MapRazorPages();
 
-using(var scope = app.Services.CreateScope())
+using (var scope = app.Services.CreateScope())
 {
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 

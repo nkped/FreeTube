@@ -34,7 +34,10 @@ namespace FreeTube.Controllers.Api
             var movies = _db.Movies.Where(m => newRental.MovieIdes.Contains(m.Id));
 
             foreach (var movie in movies) {
-                    var rental = new Rental
+
+                movie.NumberAvailable--; 
+                
+                var rental = new Rental
                     {
                         Customer = customer,
                         Movie = movie,

@@ -81,16 +81,18 @@ namespace FreeTube.Controllers
 
             if (movie.Id == 0)
             {
+                movie.NumberAvailable = movie.NumberInStock;
                 _db.Movies.Add(movie);
             }
             else
             {
-                var movieInDb = _db.Movies.Single(c => c.Id == movie.Id);
+                Movie movieInDb = _db.Movies.Single(c => c.Id == movie.Id);
                 movieInDb.Title = movie.Title;
                 movieInDb.NumberInStock = movie.NumberInStock;
                 movieInDb.ReleaseDate = movie.ReleaseDate;
                 movieInDb.GenreId = movie.GenreId;
                 movieInDb.DateAdded = movie.DateAdded;
+                movie.NumberAvailable = movie.NumberInStock;
             }
 
             _db.SaveChanges();

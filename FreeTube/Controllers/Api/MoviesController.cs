@@ -54,6 +54,8 @@ namespace FreeTube.Controllers.Api
 
             Movie movie = _mapper.Map<Movie>(movieDto);
 
+            movie.NumberAvailable = movie.NumberInStock;
+
             await _db.Movies.AddAsync(movie);
             await _db.SaveChangesAsync();
             movieDto.Id = movie.Id;

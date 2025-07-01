@@ -21,13 +21,11 @@ namespace FreeTube.Models
         public DateTime? ReleaseDate { get; set; }
         
         public DateTime? DateAdded { get; set; }
-        
+
         [Required(ErrorMessage = "Number In Stock must be 1 - 20")]
         [Range(0, 20)]
         [Display(Name = "Number In Stock")]
-        public byte? NumberInStock { get; set; }
-      
-
-
+        public byte NumberInStock { get; set; }
+        public byte NumberAvailable { get; set; }
     }
 }

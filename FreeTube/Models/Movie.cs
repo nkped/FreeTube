@@ -26,5 +26,8 @@ namespace FreeTube.Models
         [Range(0, 20)]
         [Display(Name = "Number In Stock")]
         public byte? NumberInStock { get; set; }
+      
+
+
     }
 }

@@ -25,11 +25,12 @@ builder.Services.AddAuthentication()
     });
 
 
-
-
 builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.AddRazorPages();
+
+builder.Services.AddMiniProfiler();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -46,6 +47,8 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseMiniProfiler();
 
 app.MapControllerRoute(
     name: "default",

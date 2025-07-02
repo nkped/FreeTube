@@ -24,16 +24,34 @@ namespace FreeTube.Controllers.Api
         {
             _db = db;
         }
-
+        //this action uses 'defensive' programming (vs 'optimistic' programming)
+        //this approach is actually most suited for api's
         [Microsoft.AspNetCore.Mvc.HttpPost]
         public async Task<ActionResult> CreateRental(NewRentalDto newRental)
         {
+            if (newRental.MovieIdes.Count == 0)
+            {
+                return BadRequest("No MovieIds have been given..");
+            }
             
-            Customer? customer = await _db.Customers.SingleAsync(c => c.Id == newRental.CustomerId);
+            Customer? customer = await _db.Customers.SingleOrDefaultAsync(c => c.Id == newRental.CustomerId);
 
-            var movies = _db.Movies.Where(m => newRental.MovieIdes.Contains(m.Id));
+            if (customer == null)
+            {
+                return BadRequest("CustomerId is not valid..");
+            }
+
+            var movies = _db.Movies.Where(m => newRental.MovieIdes.Contains(m.Id)).ToList();
+
+            if (movies.Count != newRental.MovieIdes.Count)
+            {
+                return BadRequest("One or more MovieIdes are invalid");
+            }
 
             foreach (var movie in movies) {
+
+                if (movie.NumberAvailable == 0)
+                    return BadRequest("Movie is not available");
 
                 movie.NumberAvailable--; 
                 

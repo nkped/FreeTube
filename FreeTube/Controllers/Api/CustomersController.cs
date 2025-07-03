@@ -1,18 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
+using System.Web.Http;
+using AutoMapper;
+using FreeTube.Data;
+using FreeTube.Dtos;
+using FreeTube.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using FreeTube.Data;
-using FreeTube.Models;
-using System.Net;
-using System.Web.Http;
+using Newtonsoft.Json.Linq;
 using RouteAttribute = Microsoft.AspNetCore.Mvc.RouteAttribute;
-using FreeTube.Dtos;
-using AutoMapper;
-using Microsoft.AspNetCore.Http.Extensions;
 
 namespace FreeTube.Controllers.Api
 {
@@ -28,14 +30,22 @@ namespace FreeTube.Controllers.Api
             _mapper = mapper;
         }
         //api/customers
+
         [Microsoft.AspNetCore.Mvc.HttpGet]
-        public async Task<ActionResult<IEnumerable<CustomerDto>>> GetCustomers()
+        public IActionResult GetCustomers(string? query = null)
         {
-            List<Customer> customers = await _db.Customers
-                .Include((c) => c.MembershipType)
-                .ToListAsync();
-            List<CustomerDto> customersDto = _mapper.Map<List<Customer>, List<CustomerDto>>(customers);
-            return Ok(customersDto);
+
+            var customersQuery = _db.Customers.ToList();
+               //.Include(c => c.MembershipType);
+
+            if (!String.IsNullOrWhiteSpace(query))
+                customersQuery.Where(c => c.Name.Contains(query));
+
+            var customerDtos = _mapper.Map<List<CustomerDto>>(customersQuery);
+
+
+            //var customerDtos = customersQuery.Select(_mapper.Map<CustomerDto>(customersQuery));
+            return Ok(customerDtos);
         }
 
         //api/customers/id
@@ -68,7 +78,7 @@ namespace FreeTube.Controllers.Api
             return Created(new Uri(Request.GetEncodedUrl() + "/" + customerDto.Id), customerDto);
         }
 
-        [Microsoft.AspNetCore.Mvc.HttpPut("{id}")]
+        [Microsoft.AspNetCore.Mvc.HttpPut]
         public async Task<ActionResult> UpdateCustomer(int id, CustomerDto customerDto)
         {
             if (!ModelState.IsValid)

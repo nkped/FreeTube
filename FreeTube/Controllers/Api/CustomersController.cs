@@ -32,20 +32,20 @@ namespace FreeTube.Controllers.Api
         //api/customers
 
         [Microsoft.AspNetCore.Mvc.HttpGet]
-        public IActionResult GetCustomers(string? query = null)
+        public IActionResult GetCustomers(string? query)
         {
 
-            var customersQuery = _db.Customers.ToList();
-               //.Include(c => c.MembershipType);
+            var customersQuery = _db.Customers
+               .Include(c => c.MembershipType);
 
-            if (!String.IsNullOrWhiteSpace(query))
-                customersQuery.Where(c => c.Name.Contains(query));
-
-            var customerDtos = _mapper.Map<List<CustomerDto>>(customersQuery);
+            if (!String.IsNullOrWhiteSpace(query)){
+                var listOfCustomers = customersQuery.Where(c => c.Name.Contains(query));
+            var customerDtos = _mapper.Map<List<CustomerDto>>(listOfCustomers);
 
 
             //var customerDtos = customersQuery.Select(_mapper.Map<CustomerDto>(customersQuery));
             return Ok(customerDtos);
+            } return BadRequest("something went wrong");
         }
 
         //api/customers/id

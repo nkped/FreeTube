@@ -26,13 +26,19 @@ namespace FreeTube.Controllers.Api
         }
 
         [Microsoft.AspNetCore.Mvc.HttpGet]
-        public async Task<IEnumerable<MovieDto>> GetMovies()
+        public IActionResult GetMovies(string? query = null)
         {
-            List<Movie> moviesInDb = await _db.Movies
-                .Include(m => m.Genre)
-                .ToListAsync();
+            var customersQuery = _db.Movies
+                .Include(c => c.Genre);
 
-            return _mapper.Map<List<MovieDto>>(moviesInDb);
+            if (!String.IsNullOrWhiteSpace(query))
+            {
+                var listOfMovies = customersQuery.Where(c => c.Title.Contains(query));
+                var movieDtos = _mapper.Map<List<MovieDto>>(listOfMovies);
+
+                return Ok(movieDtos);
+            }
+            return BadRequest("something went wrong..");
         }
 
         [Microsoft.AspNetCore.Mvc.HttpGet("{id}")]

@@ -10,15 +10,24 @@
 
     <div class="">
         <label>Customer</label>
-        <input id="customer" name="customer" type="text" class="form-control" value="" />
+    <div class="tt-container">
+       <input id="customer" name="customer" type="text" class="form-control" value="" />
+    </div>
     </div>
     <div class="form-group">
         <label>Movie</label>
+    <div class="tt-container">
         <input id="movie" name="movie" type="text" class="form-control" value="" />
+    </div>
     </div>
     <button class="btn btn-primary">Submit</button>
 
-    <ul id="movies" class="list-group"></ul>
+    <div class="row">
+        <div class="col-md-4">
+            <ul id="movies" class="list-group"></ul>
+        </div>
+    </div>
+
 
     
 </form>
@@ -70,7 +79,7 @@
                 display: 'title',
                 source: movies
             }).on("typeahead:select", function(e, movie){
-                 $('#movies').append('<li>' + movie.title + '</li>');
+                 $('#movies').append('<li class="list-group-item">' + movie.title + '</li>');
                  $('#movies').typeahead('val', '');
                  vm.movieIds.push(movie.id);
             });

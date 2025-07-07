@@ -29,11 +29,14 @@ namespace FreeTube.Controllers.Api
         public IActionResult GetMovies(string? query = null)
         {
             var customersQuery = _db.Movies
-                .Include(c => c.Genre);
+                .Include(c => c.Genre)
+                .Where(c => c.NumberAvailable > 0);
 
             if (!String.IsNullOrWhiteSpace(query))
             {
-                var listOfMovies = customersQuery.Where(c => c.Title.Contains(query));
+                var listOfMovies = customersQuery.Where(c =>
+                c.Title.Contains(query));
+
                 var movieDtos = _mapper.Map<List<MovieDto>>(listOfMovies);
 
                 return Ok(movieDtos);

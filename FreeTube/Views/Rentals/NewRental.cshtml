@@ -6,7 +6,7 @@
 
 <h1>Create New Rental</h1>
 
-<form>
+<form id="newRental">
 
     <div class="">
         <label>Customer</label>
@@ -83,6 +83,22 @@
                  $('#movies').typeahead('val', '');
                  vm.movieIds.push(movie.id);
             });
+            $('#newRental').submit(function (e) {
+                e.preventDefault();
+
+                $.ajax({
+                    url: 'api/newRentals',
+                    method: 'POST',
+                    data: vw
+                })
+                .done(function() {
+                    console.log('done...')
+                })
+                .fail(function() {
+
+                })
+
+            })
         });
     </script>
 }

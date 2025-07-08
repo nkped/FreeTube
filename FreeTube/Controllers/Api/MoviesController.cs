@@ -28,20 +28,24 @@ namespace FreeTube.Controllers.Api
         [Microsoft.AspNetCore.Mvc.HttpGet]
         public IActionResult GetMovies(string? query = null)
         {
-            var customersQuery = _db.Movies
-                .Include(c => c.Genre)
-                .Where(c => c.NumberAvailable > 0);
+            var movies = _db.Movies
+                .Where(c => c.NumberAvailable > 0)
+                .Include(c => c.Genre);
 
             if (!String.IsNullOrWhiteSpace(query))
             {
-                var listOfMovies = customersQuery.Where(c =>
+                var moviesQuery = movies.Where(c =>
                 c.Title.Contains(query));
 
-                var movieDtos = _mapper.Map<List<MovieDto>>(listOfMovies);
+                var movieDtos = _mapper.Map<List<MovieDto>>(moviesQuery);
 
                 return Ok(movieDtos);
+            } else {
+                
+                var movieDtos = _mapper.Map<List<MovieDto>>(movies);
+                
+                return Ok(movieDtos);
             }
-            return BadRequest("something went wrong..");
         }
 
         [Microsoft.AspNetCore.Mvc.HttpGet("{id}")]

@@ -76,6 +76,7 @@
                  $('#selectMovies').append('<li class="">' + movie.title + '</li>');
                  $('#movie').typeahead('val', '');
                  vm.movieIds.push(movie.id);
+                 console.log('movie.id: ', vm.movieIds)
             });
             $('#newRental').submit(function(e) {
                 e.preventDefault();
@@ -83,10 +84,14 @@
                 $.ajax({
                     url: '/api/NewRentals',
                     method: 'post',
-                    data: vm
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                    CustomerId: vm.customerId,
+                    MovieIdes: vm.movieIds 
+                    })
                 })
                 .done(function() {
-                    console.log('done...')
+                    console.log('done...', vm)
                 })
                 .fail(function() {
                     console.log('failed...', vm)

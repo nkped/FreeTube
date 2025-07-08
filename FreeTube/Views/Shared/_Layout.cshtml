@@ -9,6 +9,10 @@
     <link rel="stylesheet" href="~/css/typeahead.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/FreeTube.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" href="~/lib/toastr.js/toastr.min.css" />
+    
+
+
 </head>
 <body>
     <mini-profiler />
@@ -53,7 +57,9 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/lib/bootbox/bootbox.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/lib/typeahead.js/typeahead.bundle.js"></script>
+    <script src="~/lib/typeahead.js/typeahead.bundle.min.js"></script>
+    <script src="~/lib/toastr.js/toastr.min.js"></script>
+   
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

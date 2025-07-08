@@ -91,10 +91,10 @@
                     })
                 })
                 .done(function() {
-                    console.log('done...', vm)
+                    toastr.success("Rental succesfully recorded..")
                 })
                 .fail(function() {
-                    console.log('failed...', vm)
+                    toastr.error("Rental did not succeed..")
                 })
 
             })

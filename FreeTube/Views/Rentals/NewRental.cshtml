@@ -24,12 +24,9 @@
 
     <div class="row">
         <div class="col-md-4">
-            <ul id="movies" class="list-group"></ul>
+            <ul id="selectMovies" class="list-group"></ul>
         </div>
     </div>
-
-
-    
 </form>
 
 
@@ -58,10 +55,7 @@
             }).on("typeahead:select", function(e, customer){
                 vm.customerId = customer.id;
             });
-        });
-   
-        $(document).ready(function () {
-            var vm = {};
+        
             var movies = new Bloodhound({
                 datumTokenizer: Bloodhound.tokenizers.obj.whitespace('title'),
                 queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -79,23 +73,23 @@
                 display: 'title',
                 source: movies
             }).on("typeahead:select", function(e, movie){
-                 $('#movies').append('<li class="list-group-item">' + movie.title + '</li>');
-                 $('#movies').typeahead('val', '');
+                 $('#selectMovies').append('<li class="">' + movie.title + '</li>');
+                 $('#movie').typeahead('val', '');
                  vm.movieIds.push(movie.id);
             });
-            $('#newRental').submit(function (e) {
+            $('#newRental').submit(function(e) {
                 e.preventDefault();
 
                 $.ajax({
-                    url: 'api/newRentals',
-                    method: 'POST',
-                    data: vw
+                    url: '/api/NewRentals',
+                    method: 'post',
+                    data: vm
                 })
                 .done(function() {
                     console.log('done...')
                 })
                 .fail(function() {
-
+                    console.log('failed...', vm)
                 })
 
             })

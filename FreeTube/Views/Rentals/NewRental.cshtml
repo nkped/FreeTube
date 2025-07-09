@@ -11,20 +11,20 @@
     <div class="">
         <label>Customer</label>
     <div class="tt-container">
-       <input id="customer" data-rule-validCustomer="true" required name="customer" type="text" class="form-control" value="" />
+            <input id="customer" name="customer" data-rule-validCustomer="true" required type="text" class="form-control" value="" />
     </div>
     </div>
-    <div class="form-group">
+    <div class="">
         <label>Movie</label>
     <div class="tt-container">
-        <input id="movie" name="movie" type="text" class="form-control" value="" />
+            <input id="movie" name="movie" data-rule-atLeastOneMovie="true" type="text" class="form-control" value="" />
     </div>
     </div>
     <button class="btn btn-primary">Submit</button>
 
     <div class="row">
         <div class="col-md-4">
-            <ul id="selectMovies" class="list-group"></ul>
+            <ul id="selectMovies" class=""></ul>
         </div>
     </div>
 </form>
@@ -81,11 +81,14 @@
 
             $.validator.addMethod('validCustomer', function() {
                 return vm.customerId && vm.customerId !== 0;
-            }, 'Please select a valid customer..')
+            }, 'Please select a valid customer..');
 
-            $('#newRental').validate({
+             $.validator.addMethod("atLeastOneMovie", function () {
+                return vm.movieIds.length > 0;
+            }, "Please select at least one movie.");
+
+            var validator = $('#newRental').validate({
                 submitHandler: function() {
-                    e.preventDefault();
 
                 $.ajax({
                     url: '/api/NewRentals',
@@ -97,11 +100,20 @@
                     })
                 })
                 .done(function() {
-                    toastr.success("Rental succesfully recorded..")
+                    toastr.success("Rental succesfully recorded..");
+
+                    $("#customer").typeahead("val", "");
+                        $("#movie").typeahead("val", "");
+                        $("#selectMovies").empty();
+
+                        vm = { movieIds: [] };
+
+                        validator.resetForm();
                 })
                 .fail(function() {
-                    toastr.error("Rental did not succeed..")
+                    toastr.error("Rental did not succeed..");
                 });
+                return false;
                 }
             });
         });

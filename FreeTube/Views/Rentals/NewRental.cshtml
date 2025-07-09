@@ -112,6 +112,8 @@
                 })
                 .fail(function() {
                     toastr.error("Rental did not succeed..");
+                    $("#selectMovies").empty();
+                    vm = { movieIds: [] };
                 });
                 return false;
                 }

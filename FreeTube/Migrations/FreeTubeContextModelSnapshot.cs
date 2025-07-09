@@ -48,7 +48,7 @@ namespace FreeTube.Migrations
 
                     b.HasIndex("MembershipTypeId");
 
-                    b.ToTable("Customers");
+                    b.ToTable("Customers", (string)null);
                 });
 
             modelBuilder.Entity("FreeTube.Models.Genre", b =>
@@ -63,7 +63,7 @@ namespace FreeTube.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Genre");
+                    b.ToTable("Genre", (string)null);
 
                     b.HasData(
                         new
@@ -112,7 +112,7 @@ namespace FreeTube.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MembershipType");
+                    b.ToTable("MembershipType", (string)null);
 
                     b.HasData(
                         new
@@ -183,7 +183,7 @@ namespace FreeTube.Migrations
 
                     b.HasIndex("GenreId");
 
-                    b.ToTable("Movies");
+                    b.ToTable("Movies", (string)null);
                 });
 
             modelBuilder.Entity("FreeTube.Models.Rental", b =>
@@ -212,7 +212,7 @@ namespace FreeTube.Migrations
 
                     b.HasIndex("MovieId");
 
-                    b.ToTable("Rental");
+                    b.ToTable("Rental", (string)null);
                 });
 
             modelBuilder.Entity("FreeTube.Models.Customer", b =>

@@ -35,11 +35,11 @@ namespace FreeTube.Controllers.Api
 
             foreach (var movie in movies) {
 
-            //    if (movie.NumberAvailable == 0)
-            //        return BadRequest("Movie is not available");
+                if (movie.NumberAvailable == 0)
+                    return BadRequest("Movie is not available");
 
-            //    movie.NumberAvailable--; 
-                
+                movie.NumberAvailable--;
+
                 var rental = new Rental
                     {
                         Customer = customer,
@@ -48,7 +48,8 @@ namespace FreeTube.Controllers.Api
                     };
                 _db.Rental.Add(rental);
                 }
-                    _db.SaveChanges();
+                
+            _db.SaveChanges();
             
             return Ok();
               
